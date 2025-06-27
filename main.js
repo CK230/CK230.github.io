@@ -67,7 +67,8 @@ function showArticle(articleId) {
 function loadArticleContent(articleId, targetElement) {
     // 根据文章ID确定对应的HTML文件名
     const fileMap = {
-        'blog': 'blog.html'
+        'blog': 'blog.html',
+        'aicode': 'aicode.html'
     };
     const fileName = fileMap[articleId];
     if (fileName) {
