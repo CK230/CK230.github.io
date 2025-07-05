@@ -25,6 +25,9 @@
     --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-bounce: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
     --transition-elastic: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    --sidebar-width: 300px; /* Define sidebar width for consistent calculation */
+    --arrow-width: 40px; /* Define arrow width */
+    --arrow-offset: 10px; /* Offset from the edge */
 }
 
 * {
@@ -53,7 +56,7 @@ body::before {
     left: 0;
     width: 100%;
     height: 100%;
-    background: 
+    background:
         radial-gradient(circle at 20% 20%, rgba(147, 197, 253, 0.3) 0%, transparent 40%),
         radial-gradient(circle at 80% 30%, rgba(219, 234, 254, 0.4) 0%, transparent 50%),
         radial-gradient(circle at 40% 80%, rgba(96, 165, 250, 0.2) 0%, transparent 45%),
@@ -83,7 +86,7 @@ body::before {
     right: 0;
     z-index: 1000;
     border-bottom: 2px solid rgba(219, 234, 254, 0.6);
-    box-shadow: 
+    box-shadow:
         0 25px 50px -12px var(--shadow-light),
         0 15px 25px -5px var(--shadow-medium),
         inset 0 2px 0 rgba(255, 255, 255, 0.9),
@@ -111,7 +114,7 @@ body::before {
 
 .navbar:hover {
     transform: translateY(-3px);
-    box-shadow: 
+    box-shadow:
         0 35px 60px -15px var(--shadow-medium),
         0 20px 25px -5px var(--shadow-light),
         inset 0 2px 0 rgba(255, 255, 255, 1),
@@ -133,12 +136,11 @@ body::before {
     border: 4px solid transparent;
     background: var(--gradient-primary);
     background-clip: padding-box;
-    box-shadow: 
+    box-shadow:
         0 15px 35px var(--shadow-medium),
         0 5px 15px var(--shadow-light),
         inset 0 2px 0 rgba(255, 255, 255, 0.5);
     object-fit: cover;
-   /* transition: var(--transition-elastic);*/
     position: relative;
     cursor: pointer;
 }
@@ -173,7 +175,7 @@ body::before {
 
 .avatar:hover {
     transform: scale(1.15) rotate(8deg);
-    box-shadow: 
+    box-shadow:
         0 25px 50px var(--shadow-heavy),
         0 10px 25px var(--shadow-medium),
         0 0 0 4px rgba(255, 255, 255, 0.8),
@@ -252,7 +254,7 @@ body::before {
     cursor: pointer;
     position: relative;
     overflow: hidden;
-    box-shadow: 
+    box-shadow:
         0 4px 15px var(--shadow-light),
         inset 0 1px 0 rgba(255, 255, 255, 0.8);
 }
@@ -285,8 +287,7 @@ body::before {
 
 .nav-link:hover {
     color: var(--primary-text-color);
-   /* transform: translateY(-3px) scale(1.05);*/
-    box-shadow: 
+    box-shadow:
         0 15px 30px var(--shadow-medium),
         0 5px 15px var(--shadow-light),
         inset 0 1px 0 rgba(255, 255, 255, 1);
@@ -306,24 +307,23 @@ body::before {
 .nav-link.active {
     background: var(--gradient-primary);
     color: white;
-    box-shadow: 
+    box-shadow:
         0 10px 25px var(--shadow-heavy),
         0 4px 15px var(--shadow-medium),
         inset 0 1px 0 rgba(255, 255, 255, 0.3);
     border-color: transparent;
-    /*transform: translateY(-2px);*/
 }
 
 .sidebar {
     position: fixed;
     top: 130px;
     left: 0;
-    width: 300px;
+    width: var(--sidebar-width); /* Using CSS variable */
     height: calc(100vh - 130px);
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(30px);
     -webkit-backdrop-filter: blur(30px);
-    box-shadow: 
+    box-shadow:
         0 30px 60px -15px var(--shadow-heavy),
         0 15px 30px -5px var(--shadow-medium),
         inset -2px 0 0 rgba(219, 234, 254, 0.5),
@@ -333,7 +333,7 @@ body::before {
     display: flex;
     flex-direction: column;
     padding-top: 20px;
-    transition: var(--transition-elastic);
+    transition: transform var(--transition-elastic); /* Only transition transform */
     overflow: hidden;
     border-right: 2px solid rgba(219, 234, 254, 0.6);
 }
@@ -362,30 +362,27 @@ body::before {
     animation: slideGlow 3s ease-in-out infinite;
 }
 
-@keyframes slideGlow {
-    0%, 100% { transform: translateY(-100%); opacity: 0.3; }
-    50% { transform: translateY(100%); opacity: 0.8; }
-}
-
+/* Sidebar completely hidden when closed */
 .sidebar.closed {
-    transform: translateX(-85%);
-    box-shadow: 
-        0 15px 30px var(--shadow-light),
-        0 5px 15px var(--shadow-medium);
+    transform: translateX(-100%); /* Sidebar completely off-screen by its full width */
+    box-shadow: none; /* No shadow when completely hidden */
 }
 
+/* Sidebar arrow default state (sidebar is OPEN, arrow points left to close) */
 .sidebar-arrow {
-    position: absolute;
+    position: fixed; /* Fixed relative to viewport */
     top: 50%;
-    right: -30px;
-    transform: translateY(-50%);
-    width: 40px;
+    /* Position at the right edge of the OPEN sidebar */
+    /* Calculate position based on sidebar width, arrow width, and offset */
+    left: calc(var(--sidebar-width) - var(--arrow-width) + var(--arrow-offset));
+    transform: translateY(-50%); /* Center vertically */
+    width: var(--arrow-width);
     height: 50px;
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(20px);
     border: none;
-    border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0;
-    box-shadow: 
+    border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0; /* Rounded right corners */
+    box-shadow:
         0 10px 25px var(--shadow-medium),
         inset 0 1px 0 rgba(255, 255, 255, 0.5);
     display: flex;
@@ -393,35 +390,45 @@ body::before {
     justify-content: center;
     cursor: pointer;
     z-index: 1001;
-    transition: var(--transition-smooth);
+    transition: left var(--transition-smooth); /* Animate 'left' property */
     border: 1px solid rgba(219, 234, 254, 0.5);
-    border-left: none;
+    border-left: none; /* No left border when on the right */
 }
 
+/* Arrow icon when sidebar is OPEN (points LEFT) */
 .sidebar-arrow::before {
     content: '';
     display: inline-block;
     border: solid var(--accent-color);
     border-width: 0 2px 2px 0;
     padding: 4px;
-    transform: rotate(135deg);
-    transition: var(--transition-smooth);
+    transform: rotate(135deg); /* Points LEFT */
+    transition: transform var(--transition-smooth); /* Animate transform for icon */
 }
 
-.sidebar.closed .sidebar-arrow::before {
-    transform: rotate(-45deg);
+/* When sidebar is closed (body has sidebar-closed-active class) */
+body.sidebar-closed-active .sidebar-arrow {
+    left: var(--arrow-offset); /* Fixed at the left edge of the viewport with offset */
+    border-radius: var(--border-radius-md) 0 0 var(--border-radius-md); /* Rounded left corners */
+    border-right: none; /* No right border when on the left */
+    border-left: 1px solid rgba(219, 234, 254, 0.5); /* Add left border */
 }
 
+/* Arrow icon when sidebar is CLOSED (points RIGHT) */
+body.sidebar-closed-active .sidebar-arrow::before {
+    transform: rotate(-45deg); /* Points RIGHT */
+}
+
+/* Hover effect for arrow when sidebar is open */
 .sidebar-arrow:hover {
     background: var(--gradient-primary);
-    transform: translateY(-50%) scale(1.1);
-    box-shadow: 0 15px 35px var(--shadow-heavy);
 }
 
 .sidebar-arrow:hover::before {
     border-color: white;
 }
 
+/* --- Restored Sidebar Content Styles --- */
 .sidebar-list {
     list-style: none;
     padding: 0 1.5rem;
@@ -554,16 +561,20 @@ body::before {
     top: 0;
     transform: none;
 }
+/* --- End of Restored Sidebar Content Styles --- */
 
+
+/* Adjust content margin when sidebar is closed (only arrow visible) */
 .content-area {
-    margin-left: 320px;
+    /* Default margin when sidebar is open */
+    margin-left: calc(var(--sidebar-width) + 20px); 
     padding: 2rem;
-    transition: var(--transition-elastic);
+    transition: margin-left var(--transition-elastic); /* Animate margin-left */
     min-height: calc(100vh - 180px);
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(30px);
     border-radius: var(--border-radius-xl);
-    box-shadow: 
+    box-shadow:
         0 30px 60px -15px var(--shadow-light),
         0 15px 30px -5px var(--shadow-medium),
         inset 0 2px 0 rgba(255, 255, 255, 0.9),
@@ -582,7 +593,7 @@ body::before {
     left: 0;
     width: 100%;
     height: 100%;
-    background: 
+    background:
         radial-gradient(circle at 85% 15%, rgba(147, 197, 253, 0.08) 0%, transparent 50%),
         radial-gradient(circle at 15% 85%, rgba(219, 234, 254, 0.08) 0%, transparent 50%),
         radial-gradient(circle at 50% 50%, rgba(96, 165, 250, 0.03) 0%, transparent 70%);
@@ -595,13 +606,16 @@ body::before {
     50% { opacity: 1; transform: scale(1.02); }
 }
 
-.sidebar.closed ~ .content-area {
-    margin-left: 60px;
+/* When sidebar is closed (body has sidebar-closed-active class) */
+body.sidebar-closed-active .content-area {
+    /* When sidebar is closed, content area should start after the visible arrow */
+    margin-left: calc(var(--arrow-width) + 20px + var(--arrow-offset)); /* Arrow width + spacing */
 }
 
 .article-content {
-    display: none;
-    padding: 2rem;
+    /* This class is applied to the content INSIDE the dynamically created content-area */
+    display: block; /* Always visible within content-area once created */
+    padding: 0; /* Padding is on content-area, not here */
     line-height: 1.8;
     font-size: 1.2rem;
     color: var(--primary-text-color);
@@ -610,9 +624,10 @@ body::before {
     z-index: 1;
 }
 
-.article-content.active {
+/* No longer need .article-content.active, as content-area handles visibility */
+/* .article-content.active {
     display: block;
-}
+} */
 
 @keyframes fadeInUp {
     from {
@@ -692,14 +707,17 @@ body::before {
 
 /* Responsive Design */
 @media (max-width: 1200px) {
-    .sidebar {
-        width: 280px;
+    :root {
+        --sidebar-width: 280px;
     }
     .content-area {
-        margin-left: 300px;
+        margin-left: calc(var(--sidebar-width) + 20px);
     }
-    .sidebar.closed ~ .content-area {
-        margin-left: 50px;
+    body.sidebar-closed-active .content-area {
+        margin-left: calc(var(--arrow-width) + 20px + var(--arrow-offset));
+    }
+    .sidebar-arrow {
+        left: calc(var(--sidebar-width) - var(--arrow-width) + var(--arrow-offset));
     }
 }
 
@@ -707,17 +725,22 @@ body::before {
     .navbar-center {
         font-size: 1.1rem;
     }
+    :root {
+        --sidebar-width: 260px;
+    }
     .sidebar {
-        width: 260px;
         padding-top: 100px;
     }
     .content-area {
-        margin-left: 280px;
+        margin-left: calc(var(--sidebar-width) + 20px);
         padding: 1.5rem;
         margin-right: 0.5rem;
     }
-    .sidebar.closed ~ .content-area {
-        margin-left: 40px;
+    body.sidebar-closed-active .content-area {
+        margin-left: calc(var(--arrow-width) + 20px + var(--arrow-offset));
+    }
+    .sidebar-arrow {
+        left: calc(var(--sidebar-width) - var(--arrow-width) + var(--arrow-offset));
     }
 }
 
@@ -754,14 +777,14 @@ body::before {
         max-height: 60px;
     }
     .sidebar-arrow {
-        display: none;
+        display: none; /* Hide the side arrow for mobile */
     }
     .content-area {
         margin-left: 0;
         margin-right: 0.5rem;
         margin-left: 0.5rem;
     }
-    .sidebar.closed ~ .content-area {
+    body.sidebar-closed-active .content-area {
         margin-left: 0.5rem;
     }
     .article-content {
@@ -829,11 +852,11 @@ body::before {
         --border-color: rgba(59, 130, 246, 0.2);
         --gradient-hero: linear-gradient(135deg, #0c1222 0%, #1e3a8a 50%, #1e40af 100%);
     }
-    
+
     body {
         background: var(--gradient-hero);
     }
-    
+
     .navbar,
     .sidebar,
     .content-area {

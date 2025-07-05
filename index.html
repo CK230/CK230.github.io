@@ -27,23 +27,23 @@
         </div>
     </nav>
     
-    <aside class="sidebar closed" id="sidebar">
-        <button class="sidebar-arrow" id="sidebarArrow" aria-label="Toggle sidebar"></button>
+    <aside class="sidebar" id="sidebar">
+        <!-- 侧边栏内容列表 -->
         <ul class="sidebar-list">
             <li class="sidebar-category">
                 <div class="category-header" data-category="web">Web</div>
                 <ul class="article-list" style="display:none;">
-                    <li><a href="#" class="sidebar-link" data-article="html">Html</a></li>
+                    <li><a href="#" class="sidebar-link" data-article="html">HTML</a></li>
                 </ul>
             </li>
         </ul>
     </aside>
 
-    <!-- 主内容区域 -->
-    <main class="content-area" id="contentArea">
-        <div id="htmlContent" class="article-content">
-            <!-- Html 文章内容将在这里动态加载 -->
-        </div>
-    </main>
+    <!-- 侧边栏展开/收起箭头按钮 (已移到 sidebar 外部) -->
+    <button class="sidebar-arrow" id="sidebarArrow" aria-label="Toggle sidebar"></button>
+
+    <!-- 主内容区域将由 JavaScript 动态创建 -->
+
 </body>
+
 </html>
